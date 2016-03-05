@@ -1,10 +1,9 @@
-import java.util.Comparator;
-
 public class Process {
     public int arrival;
     public int burst;
     public int priority;
     public int quantum;
+    public int key;
 
     public Process (int arrival, int burst, int priority, int quantum) {
         this.arrival = arrival;
@@ -19,4 +18,6 @@ public class Process {
         FCFS, SJF, 
         SRTF, P, RR
     }*/
+
+
 }

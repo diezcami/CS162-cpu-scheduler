@@ -1,14 +1,16 @@
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class Runner {
     public static void main (String args[]) {
         //ProcessScheduler ps = new ProcessScheduler();
     	ProcessScheduler ps;
+    	PriorityQueue pq;
         Scanner sc = new Scanner(System.in);
 
         int numCases = Integer.parseInt(sc.nextLine());
 
-        while (numCases > 0) {
+        for ( int j = 1; j <= numCases; j++ ) {
             String[] caseData = sc.nextLine().split("\\s+");
             // caseData[0]: number of processes
             // caseData[1]: FCFS, SJF, SRTF, P, RR
@@ -27,6 +29,9 @@ public class Runner {
                 processes[i] = temp;
             }
             ps = new ProcessScheduler(algorithm, processes);
+            pq = new PriorityQueue<Process>(ps);
+            System.out.println(j);
+            ps.printGantt(pq);
             //ps.setAlgorithm (caseData[1]);
         }
     }
