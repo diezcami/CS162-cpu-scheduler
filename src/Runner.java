@@ -15,7 +15,7 @@ public class Runner {
             // caseData[0]: number of processes
             // caseData[1]: FCFS, SJF, SRTF, P, RR
             int numProcesses = Integer.parseInt(caseData[0]);
-            String algorithm = caseData[1];
+            String schedulingAlgorithm = caseData[1];
             // Parse processes into an array
             Process[] processes = new Process[numProcesses];
             for (int i = 0; i < numProcesses; i++) {
@@ -23,12 +23,12 @@ public class Runner {
                 int arrival = Integer.parseInt(processData[0]);// processData[0]: arrival
                 int burst = Integer.parseInt(processData[1]);// processData[1]: burst
                 int priority = Integer.parseInt(processData[2]);// processData[2]: priority
-                int quantum = caseData[1].equals("RR") ? Integer.parseInt(processData[3]) : 0;// processData[3]: quantum (only if RR)
-                Process temp = new Process (arrival, burst , priority, quantum );
-                //temp.quantum = caseData[1].equals("RR") ? processData[3] : 0;
+                int quantum = schedulingAlgorithm.equals("RR") ? Integer.parseInt(processData[3]) : 0;// processData[3]: quantum (only if RR)
+                Process temp = new Process (arrival, burst , priority, quantum, schedulingAlgorithm);
+                temp.quantum = schedulingAlgorithm.equals("RR") ? processData[3] : 0;
                 processes[i] = temp;
             }
-            ps = new ProcessScheduler(algorithm, processes);
+            ps = new ProcessScheduler(schedulingAlgorithm, processes);
             pq = new PriorityQueue<Process>(ps);
             System.out.println(j);
             ps.printGantt(pq);
