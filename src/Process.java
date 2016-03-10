@@ -1,4 +1,5 @@
 public class Process implements Comparable<Process>{
+    public int index;
     public int arrival;
     public int burst;
     public int priority;
@@ -6,7 +7,8 @@ public class Process implements Comparable<Process>{
     public int key;
     public String schedulingAlgorithm;
 
-    public Process (int arrival, int burst, int priority, int quantum, String schedulingAlgorithm) {
+    public Process (int index, int arrival, int burst, int priority, int quantum, String schedulingAlgorithm) {
+        this.index = index;
         this.arrival = arrival;
         this.burst = burst;
         this.priority = priority;
