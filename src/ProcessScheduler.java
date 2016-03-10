@@ -26,21 +26,46 @@ public class ProcessScheduler implements Comparator<Process>{
     public void scheduleProcesses() {
         int currentTime = 0;
         int processesScheduled = 0;
+        // Preemptive Variables
+        Process previousProcess = null; // To know if the Gantt Chart needs to be updated
+        boolean firstIterationEver = true; // To set the previousProcess as the first process for the first iteration
+        int cpuTime = 0; // CPU time of the current process
 
         // While not all processes have been scheduled
         while (processesScheduled < processes.length) {
             // Add processes to priority queue
             for (Process p : processes) {
-                if (p.arrivalTime <= currentTime)
+                if (p.arrivalTime <= currentTime && p.burst != 0)
                     pq.offer(p);
+                if (firstIterationEver) {
+                    previousProcess = p;
+                    firstIterationEver = false;
+                }
             }
             // Actually schedule processes
             if (preemptive) { // SRTF, P, RR
                 Process p = pq.poll();
+                if (previousProcess != p) {
+                    // Handle CPU Update
+                    p.burst--;
+                    cpuTime++;
+                    if (p.burst == 0) 
+                        // *** Print currentTime, p.index, cpuTime, "X"
+                } else {
+                    // Handle previous process
+                    // *** Print currentTime, previousProcess.index, cpuTime
+                    // Handle current process
+                    p.burst--;
+                    cpuTime = 1; // Reset CPU time
+                    previousProcess = p;
+                    if (p.burst == 0)
+                        // *** Print currentTime, p.index, cpuTime, "X"
+                }
 
             } else { // Non-Preemptive: FCFS, SJF
                 Process p = pq.poll();
-                // Print i, p.index, p.burst, "X"
+                // *** Print currentTime, p.index, p.burst, "X"
+                p.burst = 0;
                 currentTime = currentTime + p.burst;
                 processesScheduled++;
             }
