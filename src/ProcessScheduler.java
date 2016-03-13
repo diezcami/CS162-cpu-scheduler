@@ -1,17 +1,19 @@
 import java.util.PriorityQueue;
 
 public class ProcessScheduler{
+	
+	public static final int PREEMPTIVE = 0;
+	public static final int NONPREEMPTIVE = 1;
+	public static final int RR = 2;
     private Process[] processes;
-    private String schedulingAlgorithm;
     private PriorityQueue<Process> pq;
-    private boolean preemptive;
+    private int algoType;
     
     public ProcessScheduler (String schedulingAlgorithm, Process[] processes) {
-        this.schedulingAlgorithm = schedulingAlgorithm;
         this.processes = processes;
         if (schedulingAlgorithm.equals ("FCFS") || schedulingAlgorithm.equals ("SJF"))
-            preemptive = false;
-        else preemptive =  true;
+            algoType = PREEMPTIVE;
+        else algoType =  NONPREEMPTIVE;
         pq = new PriorityQueue<Process>();
     }
 
@@ -43,7 +45,7 @@ public class ProcessScheduler{
                 }
             }
             // Actually schedule processes
-            if (preemptive) { // SRTF, P, RR
+            if (algoType == PREEMPTIVE) { // SRTF, P, RR
                 Process p = pq.poll();
                 if (previousProcess != p) {
                     // Handle CPU Update
@@ -65,13 +67,15 @@ public class ProcessScheduler{
                         // *** Print currentTime, p.index, cpuTime, "X"
                 }
 
-            } else { // Non-Preemptive: FCFS, SJF
+            } else if (algoType == NONPREEMPTIVE){ // Non-Preemptive: FCFS, SJF
                 Process p = pq.poll();
                 System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
                 // *** Print currentTime, p.index, p.burst, "X"
                 p.burst = 0;
                 currentTime = currentTime + p.burst;
                 processesScheduled++;
+            }else{
+            	Process p = pq.poll();
             }
 
         }
