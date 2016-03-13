@@ -1,7 +1,6 @@
-import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class ProcessScheduler implements Comparator<Process>{
+public class ProcessScheduler{
     private Process[] processes;
     private String schedulingAlgorithm;
     private PriorityQueue<Process> pq;
@@ -77,11 +76,6 @@ public class ProcessScheduler implements Comparator<Process>{
         }
     }
 
-	@Override
-	public int compare(Process arg0, Process arg1) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 /*
     @Override
     public int compare (Process p1, Process p2) {

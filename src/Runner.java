@@ -28,7 +28,7 @@ public class Runner {
                 processes[i] = temp;
             }
             ps = new ProcessScheduler(schedulingAlgorithm, processes);
-            pq = new PriorityQueue<Process>(ps);
+            //pq = new PriorityQueue<Process>(ps);
             System.out.println(j);
             ps.scheduleProcesses();
             //ps.printGantt(pq);
