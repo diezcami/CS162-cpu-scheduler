@@ -12,6 +12,7 @@ public class ProcessScheduler{
         if (schedulingAlgorithm.equals ("FCFS") || schedulingAlgorithm.equals ("SJF"))
             preemptive = false;
         else preemptive =  true;
+        pq = new PriorityQueue<Process>();
     }
 
     // Input: Processes
