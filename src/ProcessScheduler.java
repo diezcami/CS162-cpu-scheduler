@@ -1,4 +1,5 @@
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class ProcessScheduler{
 	
@@ -8,8 +9,10 @@ public class ProcessScheduler{
     private Process[] processes;
     private PriorityQueue<Process> pq;
     private int algoType;
+    private int quantum;
     
     public ProcessScheduler (String schedulingAlgorithm, Process[] processes) {
+    	this.quantum = processes[0].quantum;
         this.processes = processes;
         if (schedulingAlgorithm.equals ("FCFS") || schedulingAlgorithm.equals ("SJF"))
             algoType = PREEMPTIVE;
@@ -36,14 +39,16 @@ public class ProcessScheduler{
         // While not all processes have been scheduled
         while (processesScheduled < processes.length) {
             // Add processes to priority queue
-            for (Process p : processes) {
+    		for (Process p : processes) {
                 if (p.arrival <= currentTime && p.burst != 0)
                     pq.offer(p);
                 if (firstIterationEver) {
                     previousProcess = p;
                     firstIterationEver = false;
                 }
-            }
+            
+        	}
+            
             // Actually schedule processes
             if (algoType == PREEMPTIVE) { // SRTF, P, RR
                 Process p = pq.poll();
@@ -76,6 +81,30 @@ public class ProcessScheduler{
                 processesScheduled++;
             }else{
             	Process p = pq.poll();
+                if (previousProcess == p) {
+                    // Handle CPU Update
+                    p.burst--;
+                    p.quantum--;
+                    cpuTime++;
+                    if (p.burst == 0) 
+                    	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
+                    if(p.quantum == 0){
+                    	p.arrival = currentTime;
+                    	p.quantum = quantum;
+                    }
+                        // *** Print currentTime, p.index, cpuTime, "X"
+                } else {
+                    // Handle previous process
+                	System.out.println(currentTime + " " + previousProcess.index + " " + cpuTime);
+                    // *** Print currentTime, previousProcess.index, cpuTime
+                    // Handle current process
+                    p.burst--;
+                    cpuTime = 1; // Reset CPU time
+                    previousProcess = p;
+                    if (p.burst == 0)
+                    	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
+                        // *** Print currentTime, p.index, cpuTime, "X"
+                }
             }
 
         }
