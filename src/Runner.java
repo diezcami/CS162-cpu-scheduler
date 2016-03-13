@@ -23,7 +23,7 @@ public class Runner {
                 int arrival = Integer.parseInt(processData[0]);// processData[0]: arrival
                 int burst = Integer.parseInt(processData[1]);// processData[1]: burst
                 int priority = Integer.parseInt(processData[2]);// processData[2]: priority
-                int quantum = schedulingAlgorithm.equals("RR") ? Integer.parseInt(processData[3]) : 0;// processData[3]: quantum (only if RR)
+                int quantum = (schedulingAlgorithm.equals("RR") ? Integer.parseInt(caseData[2]) : 0);// processData[3]: quantum (only if RR)
                 Process temp = new Process (i + 1, arrival, burst , priority, quantum, schedulingAlgorithm);
                 processes[i] = temp;
             }
