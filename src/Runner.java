@@ -30,7 +30,8 @@ public class Runner {
             ps = new ProcessScheduler(schedulingAlgorithm, processes);
             pq = new PriorityQueue<Process>(ps);
             System.out.println(j);
-            ps.printGantt(pq);
+            ps.scheduleProcesses();
+            //ps.printGantt(pq);
             //ps.setAlgorithm (caseData[1]);
         }
     }
