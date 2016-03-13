@@ -5,7 +5,7 @@ public class Runner {
     public static void main (String args[]) {
         //ProcessScheduler ps = new ProcessScheduler();
     	ProcessScheduler ps;
-    	PriorityQueue pq;
+    	//PriorityQueue pq;
         Scanner sc = new Scanner(System.in);
 
         int numCases = Integer.parseInt(sc.nextLine());
