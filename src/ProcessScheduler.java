@@ -97,16 +97,10 @@ public class ProcessScheduler{
                 if (previousProcess == p) {
                     // Handle CPU Update
                     p.burst--;
-                    p.quantum--;
                     cpuTime++;
                     if (p.burst == 0){
                     	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
                     	processesFinished++;
-                    }
-                    	
-                    if(p.quantum == 0){
-                    	p.arrival = currentTime;
-                    	p.quantum = quantum;
                     }
                         // *** Print currentTime, p.index, cpuTime, "X"
                 } else {
