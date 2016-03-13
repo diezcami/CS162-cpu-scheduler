@@ -1,5 +1,4 @@
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class ProcessScheduler{
 	
@@ -16,7 +15,11 @@ public class ProcessScheduler{
         this.processes = processes;
         if (schedulingAlgorithm.equals ("FCFS") || schedulingAlgorithm.equals ("SJF"))
             algoType = PREEMPTIVE;
-        else algoType =  NONPREEMPTIVE;
+        else if( schedulingAlgorithm.equals("RR") ){
+        	algoType = RR;
+        }else{
+        	algoType =  NONPREEMPTIVE;
+        }
         pq = new PriorityQueue<Process>();
     }
 
