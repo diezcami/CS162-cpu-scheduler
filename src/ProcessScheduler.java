@@ -1,5 +1,5 @@
+import java.util.Arrays;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class ProcessScheduler{
 	
@@ -10,20 +10,37 @@ public class ProcessScheduler{
     private PriorityQueue<Process> pq;
     private int algoType;
     private int quantum;
+	private int rrpriority;
     
     public ProcessScheduler (String schedulingAlgorithm, Process[] processes) {
     	this.quantum = processes[0].quantum;
         this.processes = processes;
         if (schedulingAlgorithm.equals ("FCFS") || schedulingAlgorithm.equals ("SJF"))
             algoType = NONPREEMPTIVE;
-        else if (schedulingAlgorithm.equals ("RR"))
-            algoType = RR;
+        else if (schedulingAlgorithm.equals ("RR")){
+        	algoType = RR;
+        	sortProcesses(this.processes);
+        }
         else
             algoType = PREEMPTIVE;
         pq = new PriorityQueue<Process>();
     }
+    private void sortProcesses(Process[] sortArr) {
+    	rrpriority = 0;
+		for( Process p : sortArr ){
+			p.schedulingAlgorithm = "FCFS";
+		}
+    	Arrays.sort(sortArr);
+    	for( int i = 0; i < sortArr.length; i++ ){
+    		sortArr[i].priority = i;
+    		rrpriority++;
+    	}
+    	for( Process p : sortArr ){
+			p.schedulingAlgorithm = "RR";
+		}
+	}
 
-    // Input: None, be sure the process array isn't empty
+	// Input: None, be sure the process array isn't empty
     // Output: Schedules processes and subsequently prints Gantt Charts
     public void scheduleProcesses() {
         int currentTime = 0; // Time elapsed since scheduler started
@@ -39,6 +56,7 @@ public class ProcessScheduler{
             // Add processes to priority queue
     		for (Process p : processes) {
                 if (p.arrival <= currentTime && p.burst != 0)
+                	//if(algoType == RR && p)
                     pq.add(p);
                 if (firstIterationEver) {
                     previousProcess = p;
@@ -96,30 +114,46 @@ public class ProcessScheduler{
             // ROUND ROBIN
             // ===================================================
             } else { 
-                if (previousProcess == p) {
+            	if (previousProcess == p) {
                     // Handle CPU Update
                     p.burst--;
                     p.quantum--;
-                    cpuTime++;
-                    if (p.burst == 0)  {
-                    	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
-                        processesFinished++;
-                    }
-                    if(p.quantum == 0){
-                    	p.arrival = currentTime;
+                    p.priority = -1;
+                    if( p.quantum == 0 ){
+                    	p.priority = rrpriority++;
                     	p.quantum = quantum;
+                    	p.arrival = currentTime;
+                    }
+                    cpuTime++;
+                    if (p.burst == 0) {
+                    	System.out.println(startingTime + " " + p.index + " " + cpuTime + "X");
+                        startingTime = currentTime;
+                        processesFinished++;
+                        cpuTime = 0;
                     }
                 } else {
                     // Handle previous process
-                	System.out.println(currentTime + " " + previousProcess.index + " " + cpuTime);
+                    if (previousProcess.burst != 0){
+                    	System.out.println(startingTime + " " + previousProcess.index + " " + cpuTime);
+                    	startingTime = currentTime;
+                    }
+                	   
                     // Handle current process
                     p.burst--;
+                    p.quantum--;
+                    if( p.quantum == 0 ){
+                    	p.priority = rrpriority++;
+                    	p.quantum = quantum;
+                    	p.arrival = currentTime;
+                    }
                     cpuTime = 1; // Reset CPU time
                     previousProcess = p;
                     if (p.burst == 0) {
-                    	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
+                    	System.out.println(startingTime + " " + p.index + " " + cpuTime + "X");
                         processesFinished++;
+                        cpuTime = 0;
                     }
+                    startingTime = currentTime;
                 }
             }
         
