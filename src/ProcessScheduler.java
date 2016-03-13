@@ -40,10 +40,6 @@ public class ProcessScheduler{
     		for (Process p : processes) {
                 if (p.arrival <= currentTime && p.burst != 0)
                     pq.add(p);
-                if (firstIterationEver) {
-                    previousProcess = p;
-                    firstIterationEver = false;
-                }          
         	}
 
             if (pq.isEmpty()) {
@@ -52,6 +48,10 @@ public class ProcessScheduler{
             }
    
             Process p = pq.poll();
+            if (firstIterationEver) {
+                previousProcess = p;
+                firstIterationEver = false;
+            }          
             // ===================================================
             // PREEMPTIVE : SRTF, P
             // ===================================================
