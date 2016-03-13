@@ -15,133 +15,117 @@ public class ProcessScheduler{
     	this.quantum = processes[0].quantum;
         this.processes = processes;
         if (schedulingAlgorithm.equals ("FCFS") || schedulingAlgorithm.equals ("SJF"))
+            algoType = NONPREEMPTIVE;
+        else if (schedulingAlgorithm.equals ("RR"))
+            algoType = RR;
+        else
             algoType = PREEMPTIVE;
-        else algoType =  NONPREEMPTIVE;
         pq = new PriorityQueue<Process>();
-    }
-
-    // Input: Processes
-    // Updates processes stored in the ProcessScheduler
-    public void setProcesses (Process[] processes) {
-        this.processes = processes;
     }
 
     // Input: None, be sure the process array isn't empty
     // Output: Schedules processes and subsequently prints Gantt Charts
     public void scheduleProcesses() {
-        int currentTime = 0;
-        int processesScheduled = 0;
+        int currentTime = 0; // Time elapsed since scheduler started
+        int processesFinished = 0;
         // Preemptive Variables
         Process previousProcess = null; // To know if the Gantt Chart needs to be updated
         boolean firstIterationEver = true; // To set the previousProcess as the first process for the first iteration
         int cpuTime = 0; // CPU time of the current process
+        int startingTime = 0;
 
         // While not all processes have been scheduled
-        while (processesScheduled < processes.length) {
+        while (processesFinished < processes.length) {
             // Add processes to priority queue
     		for (Process p : processes) {
                 if (p.arrival <= currentTime && p.burst != 0)
-                    pq.offer(p);
+                    pq.add(p);
                 if (firstIterationEver) {
                     previousProcess = p;
                     firstIterationEver = false;
-                }
-            
+                }          
         	}
-            
-            // Actually schedule processes
-            if (algoType == PREEMPTIVE) { // SRTF, P, RR
-                Process p = pq.poll();
-                if (previousProcess != p) {
+
+            if (pq.isEmpty()) {
+                currentTime++;
+                continue;
+            }
+   
+            Process p = pq.poll();
+            // ===================================================
+            // PREEMPTIVE : SRTF, P
+            // ===================================================
+            if (algoType == PREEMPTIVE) { 
+                if (previousProcess == p) {
                     // Handle CPU Update
                     p.burst--;
                     cpuTime++;
-                    if (p.burst == 0) 
-                    	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
-                        // *** Print currentTime, p.index, cpuTime, "X"
+                    if (p.burst == 0) {
+                    	System.out.println(startingTime + " " + p.index + " " + cpuTime + "X");
+                        startingTime = currentTime;
+                        processesFinished++;
+                        cpuTime = 0;
+                    }
                 } else {
                     // Handle previous process
-                	System.out.println(currentTime + " " + previousProcess.index + " " + cpuTime);
-                    // *** Print currentTime, previousProcess.index, cpuTime
+                    if (previousProcess.burst != 0)
+                	   System.out.println(startingTime + " " + previousProcess.index + " " + cpuTime);
                     // Handle current process
                     p.burst--;
                     cpuTime = 1; // Reset CPU time
                     previousProcess = p;
-                    if (p.burst == 0)
-                    	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
-                        // *** Print currentTime, p.index, cpuTime, "X"
+                    if (p.burst == 0) {
+                    	System.out.println(startingTime + " " + p.index + " " + cpuTime + "X");
+                        processesFinished++;
+                        cpuTime = 0;
+                    }
+                    startingTime = currentTime;
                 }
 
+            // ===================================================
+            // NON-PREEMPTIVE : FCFS, SJF
+            // ===================================================
             } else if (algoType == NONPREEMPTIVE){ // Non-Preemptive: FCFS, SJF
-                Process p = pq.poll();
-                System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
-                // *** Print currentTime, p.index, p.burst, "X"
+                System.out.println(currentTime + " " + p.index + " " + p.burst + "X");
+                currentTime = currentTime + p.burst -1;
                 p.burst = 0;
-                currentTime = currentTime + p.burst;
-                processesScheduled++;
-            }else{
-            	Process p = pq.poll();
+                processesFinished++;
+
+
+            // ===================================================
+            // ROUND ROBIN
+            // ===================================================
+            } else { 
                 if (previousProcess == p) {
                     // Handle CPU Update
                     p.burst--;
                     p.quantum--;
                     cpuTime++;
-                    if (p.burst == 0) 
+                    if (p.burst == 0)  {
                     	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
+                        processesFinished++;
+                    }
                     if(p.quantum == 0){
                     	p.arrival = currentTime;
                     	p.quantum = quantum;
                     }
-                        // *** Print currentTime, p.index, cpuTime, "X"
                 } else {
                     // Handle previous process
                 	System.out.println(currentTime + " " + previousProcess.index + " " + cpuTime);
-                    // *** Print currentTime, previousProcess.index, cpuTime
                     // Handle current process
                     p.burst--;
                     cpuTime = 1; // Reset CPU time
                     previousProcess = p;
-                    if (p.burst == 0)
+                    if (p.burst == 0) {
                     	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
-                        // *** Print currentTime, p.index, cpuTime, "X"
+                        processesFinished++;
+                    }
                 }
             }
-
-        }
-    }
-
-/*
-    @Override
-    public int compare (Process p1, Process p2) {
-        return p1.key-p2.key;
-    }
-
-    // Input: Priority Queue
-    // Prints out Gantt Chart. Method gets called in every iteration of scheduleProcesses();
-    public void printGantt(PriorityQueue<Process> pq) {
-        // TODO Auto-generated method stub
-        this.pq = pq;
-        switch (schedulingAlgorithm) {
-            case "FCFS":
-                fcfs();
-                break;
-            case "SJF":
-                break;
-            case "SRTF":
-                break;
-            case "P":
-                break;
-            case "RR":
-                break;
-        }
-    }
-
-    private void fcfs() {
-        int currTime = 0;
-        while( !pq.isEmpty() ){
-            System.out.println(currTime + pq.poll().arrival);
-        }
         
+            previousProcess = p;
+            currentTime++;
+            pq.clear();    
+        }
     }
-    */
 }
