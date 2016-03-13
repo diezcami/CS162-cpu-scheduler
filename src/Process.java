@@ -20,25 +20,22 @@ public class Process implements Comparable<Process>{
         switch (schedulingAlgorithm) {
             case "FCFS":
                 return Integer.compare(this.arrival, p.arrival);
-                break;
             case "SJF":
                 if (this.burst != p.burst)
                     return Integer.compare(this.burst, p.burst);
                 return Integer.compare(this.arrival, p.arrival);
-                break;
             case "SRTF":
                 if (this.burst != p.burst)
                     return Integer.compare(this.burst, p.burst);
                 return Integer.compare(this.arrival, p.arrival);
-                break;
             case "P":
                 if (this.priority != p.priority)
                     return Integer.compare(this.priority, p.priority);
                 return Integer.compare(this.arrival, p.arrival);
-                break;
             case "RR":
                 return Integer.compare(this.arrival, p.arrival);
-                break;
+            default:
+            	return 0;
         }
     }
 }

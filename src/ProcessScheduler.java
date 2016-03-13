@@ -7,7 +7,7 @@ public class ProcessScheduler implements Comparator<Process>{
     private PriorityQueue<Process> pq;
     private boolean preemptive;
     
-    public ProcessScheduler (String schedulingAlorithm, Process[] processes) {
+    public ProcessScheduler (String schedulingAlgorithm, Process[] processes) {
         this.schedulingAlgorithm = schedulingAlgorithm;
         this.processes = processes;
         if (schedulingAlgorithm.equals ("FCFS") || schedulingAlgorithm.equals ("SJF"))
@@ -35,7 +35,7 @@ public class ProcessScheduler implements Comparator<Process>{
         while (processesScheduled < processes.length) {
             // Add processes to priority queue
             for (Process p : processes) {
-                if (p.arrivalTime <= currentTime && p.burst != 0)
+                if (p.arrival <= currentTime && p.burst != 0)
                     pq.offer(p);
                 if (firstIterationEver) {
                     previousProcess = p;
@@ -50,20 +50,24 @@ public class ProcessScheduler implements Comparator<Process>{
                     p.burst--;
                     cpuTime++;
                     if (p.burst == 0) 
+                    	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
                         // *** Print currentTime, p.index, cpuTime, "X"
                 } else {
                     // Handle previous process
+                	System.out.println(currentTime + " " + previousProcess.index + " " + cpuTime);
                     // *** Print currentTime, previousProcess.index, cpuTime
                     // Handle current process
                     p.burst--;
                     cpuTime = 1; // Reset CPU time
                     previousProcess = p;
                     if (p.burst == 0)
+                    	System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
                         // *** Print currentTime, p.index, cpuTime, "X"
                 }
 
             } else { // Non-Preemptive: FCFS, SJF
                 Process p = pq.poll();
+                System.out.println(currentTime + " " + p.index + " " + cpuTime + "X");
                 // *** Print currentTime, p.index, p.burst, "X"
                 p.burst = 0;
                 currentTime = currentTime + p.burst;
@@ -72,6 +76,12 @@ public class ProcessScheduler implements Comparator<Process>{
 
         }
     }
+
+	@Override
+	public int compare(Process arg0, Process arg1) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 /*
     @Override
     public int compare (Process p1, Process p2) {
