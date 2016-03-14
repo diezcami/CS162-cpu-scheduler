@@ -33,7 +33,8 @@ public class Process implements Comparable<Process>{
                     return Integer.compare(this.priority, p.priority);
                 return Integer.compare(this.arrival, p.arrival);
             case "RR":
-                return Integer.compare(this.arrival, p.arrival);
+            	return Integer.compare(this.priority, p.priority);
+            	//return Integer.compare(this.arrival, p.arrival);
             default:
             	return 0;
         }
