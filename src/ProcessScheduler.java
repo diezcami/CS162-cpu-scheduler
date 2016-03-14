@@ -57,11 +57,7 @@ public class ProcessScheduler{
     		for (Process p : processes) {
                 if (p.arrival <= currentTime && p.burst != 0)
                 	//if(algoType == RR && p)
-                    pq.add(p);
-                if (firstIterationEver) {
-                    previousProcess = p;
-                    firstIterationEver = false;
-                }          
+                    pq.add(p);         
         	}
 
             if (pq.isEmpty()) {
@@ -70,6 +66,10 @@ public class ProcessScheduler{
             }
    
             Process p = pq.poll();
+            if (firstIterationEver) {
+                previousProcess = p;
+                firstIterationEver = false;
+            }       
             // ===================================================
             // PREEMPTIVE : SRTF, P
             // ===================================================
