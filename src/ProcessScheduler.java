@@ -32,7 +32,7 @@ public class ProcessScheduler{
 		}
     	Arrays.sort(sortArr);
     	for( int i = 0; i < sortArr.length; i++ ){
-    		sortArr[i].priority = i;
+            if(sortArr[i].priority != -1 ) sortArr[i].priority = i;
     		rrpriority++;
     	}
     	for( Process p : sortArr ){
@@ -50,13 +50,15 @@ public class ProcessScheduler{
         boolean firstIterationEver = true; // To set the previousProcess as the first process for the first iteration
         int cpuTime = 0; // CPU time of the current process
         int startingTime = 0;
-
+        if(algoType==RR)sortProcesses(this.processes);
         // While not all processes have been scheduled
         while (processesFinished < processes.length) {
+            
             // Add processes to priority queue
+            //if(algoType == RR) rrpriority = 0;
     		for (Process p : processes) {
                 if (p.arrival <= currentTime && p.burst != 0)
-                	//if(algoType == RR && p)
+                	//if(algoType == RR) p.priority=rrpriority++;
                     pq.add(p);         
         	}
 
